@@ -432,7 +432,7 @@ func (a *AlertNode) runAlert([]byte) error {
 
 		// Register Handlers on topic
 		for _, h := range a.handlers {
-			a.et.tm.AlertService.RegisterHandler([]string{a.anonTopic}, h)
+			a.et.tm.AlertService.RegisterAnonHandler([]string{a.anonTopic}, h)
 		}
 		// Restore anonTopic
 		a.et.tm.AlertService.RestoreTopic(a.anonTopic)
@@ -675,7 +675,7 @@ func (a *AlertNode) runAlert([]byte) error {
 	a.et.tm.AlertService.CloseTopic(a.anonTopic)
 	// Deregister Handlers on topic
 	for _, h := range a.handlers {
-		a.et.tm.AlertService.DeregisterHandler([]string{a.anonTopic}, h)
+		a.et.tm.AlertService.DeregisterAnonHandler([]string{a.anonTopic}, h)
 	}
 	return nil
 }

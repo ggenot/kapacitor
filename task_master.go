@@ -73,7 +73,7 @@ type TaskMaster struct {
 	UDFService UDFService
 
 	AlertService interface {
-		alertservice.HandlerRegistrar
+		alertservice.AnonHandlerRegistrar
 		alertservice.Eventer
 		alertservice.TopicPersister
 	}
