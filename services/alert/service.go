@@ -151,6 +151,13 @@ func (s *Service) Open() error {
 	return nil
 }
 
+func (s *Service) Close() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.topics.Close()
+	return s.APIServer.Close()
+}
+
 func (s *Service) loadSavedHandlerSpecs() error {
 	offset := 0
 	limit := 100
@@ -229,13 +236,6 @@ func (s *Service) loadSavedTopicStates() error {
 		}
 	}
 	return nil
-}
-
-func (s *Service) Close() error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.topics.Close()
-	return s.APIServer.Close()
 }
 
 func validatePattern(pattern string) error {
