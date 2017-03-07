@@ -710,7 +710,8 @@ func (s *Server) Close() error {
 	s.TaskMaster.StopTasks()
 
 	// Close services now that all tasks are stopped.
-	for _, service := range s.Services {
+	for i := len(s.Services) - 1; i >= 0; i-- {
+		service := s.Services[i]
 		s.Logger.Printf("D! closing service: %T", service)
 		err := service.Close()
 		if err != nil {
