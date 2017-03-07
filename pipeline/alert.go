@@ -468,13 +468,35 @@ func (a *AlertNode) Flapping(low, high float64) *AlertNode {
 }
 
 // HTTP POST JSON alert data to a specified URL.
+// Example with endpoint:
+//    stream
+//         |alert()
+//             .post()
+//              .endpoint('example')
+//
+// Example with url:
+//    stream
+//         |alert()
+//             .post('http://example.com')
+//
+// Example with endpoint and url (url takes precedence):
+//    stream
+//         |alert()
+//             .post('http://other.com')
+//              .endpoint('example')
+//
 // tick:property
-func (a *AlertNode) Post(url string) *PostHandler {
+func (a *AlertNode) Post(urls ...string) *PostHandler {
 	post := &PostHandler{
 		AlertNode: a,
-		URL:       url,
 	}
 	a.PostHandlers = append(a.PostHandlers, post)
+
+	if urls == nil {
+		return post
+	}
+
+	post.URL = urls[0]
 	return post
 }
 
@@ -485,6 +507,9 @@ type PostHandler struct {
 	// The POST URL.
 	// tick:ignore
 	URL string
+
+	// Name of the endpoint to be used, as defined in the configuration file
+	Endpoint string
 }
 
 // Send JSON alert data to a specified address over TCP.

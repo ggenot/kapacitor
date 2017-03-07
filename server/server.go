@@ -139,6 +139,8 @@ func New(c *Config, buildInfo BuildInfo, logService logging.Interface) (*Server,
 	}
 	s.Logger.Println("I! Kapacitor hostname:", s.hostname)
 
+	fmt.Println(s.config.Post)
+
 	// Setup IDs
 	err = s.setupIDs()
 	if err != nil {
