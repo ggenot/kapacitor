@@ -16,6 +16,7 @@ import (
 	"github.com/influxdata/kapacitor/models"
 	"github.com/influxdata/kapacitor/pipeline"
 	alertservice "github.com/influxdata/kapacitor/services/alert"
+	"github.com/influxdata/kapacitor/services/alertpost"
 	"github.com/influxdata/kapacitor/services/hipchat"
 	"github.com/influxdata/kapacitor/services/opsgenie"
 	"github.com/influxdata/kapacitor/services/pagerduty"
@@ -129,13 +130,13 @@ func newAlertNode(et *ExecutingTask, n *pipeline.AlertNode, l *log.Logger) (an *
 	}
 
 	// Construct alert handlers
-	for _, post := range n.PostHandlers {
-		c := alertservice.PostHandlerConfig{
-			URL: post.URL,
-		}
-		h := alertservice.NewPostHandler(c, l)
-		an.handlers = append(an.handlers, h)
-	}
+	//for _, post := range n.PostHandlers {
+	//	c := alertservice.PostHandlerConfig{
+	//		URL: post.URL,
+	//	}
+	//	h := alertservice.NewPostHandler(c, l)
+	//	an.handlers = append(an.handlers, h)
+	//}
 
 	for _, tcp := range n.TcpHandlers {
 		c := alertservice.TCPHandlerConfig{
@@ -352,6 +353,18 @@ func newAlertNode(et *ExecutingTask, n *pipeline.AlertNode, l *log.Logger) (an *
 			c.Sound = p.Sound
 		}
 		h := et.tm.PushoverService.Handler(c, l)
+		an.handlers = append(an.handlers, h)
+	}
+
+	for _, p := range n.PostHandlers {
+		c := alertpost.HandlerConfig{}
+		if p.URL != "" {
+			c.URL = p.URL
+		}
+		if p.Endpoint != "" {
+			c.Endpoint = p.Endpoint
+		}
+		h := et.tm.PostService.Handler(c, l)
 		an.handlers = append(an.handlers, h)
 	}
 

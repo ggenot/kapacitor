@@ -12,6 +12,14 @@ type Config struct {
 	Headers  map[string]string `toml:"headers" override:"headers,redact"`
 }
 
+// TODO: fix
+func NewConfig() Config {
+	return Config{
+		Endpoint: "test",
+		URL:      "http://localhost:3000",
+	}
+}
+
 func (c Config) Validate() error {
 	if c.Endpoint == "" {
 		return errors.New("must specify endpoint name")
@@ -25,5 +33,17 @@ func (c Config) Validate() error {
 		return errors.Wrapf(err, "invalid URL %q", c.URL)
 	}
 
+	return nil
+}
+
+type Configs []Config
+
+func (cs Configs) Validate() error {
+	for _, c := range cs {
+		err := c.Validate()
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }

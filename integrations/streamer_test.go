@@ -31,6 +31,7 @@ import (
 	"github.com/influxdata/kapacitor/services/alert/alerttest"
 	"github.com/influxdata/kapacitor/services/alerta"
 	"github.com/influxdata/kapacitor/services/alerta/alertatest"
+	"github.com/influxdata/kapacitor/services/alertpost"
 	"github.com/influxdata/kapacitor/services/hipchat"
 	"github.com/influxdata/kapacitor/services/hipchat/hipchattest"
 	k8s "github.com/influxdata/kapacitor/services/k8s/client"
@@ -9358,6 +9359,7 @@ func testStreamer(
 	tm.HTTPDService = httpdService
 	tm.TaskStore = taskStore{}
 	tm.DeadmanService = deadman{}
+	tm.PostService = alertpost.NewService(nil, logService.NewLogger("[alertpost] ", log.LstdFlags))
 	as := alertservice.NewService(alertservice.NewConfig(), logService.NewLogger("[alert] ", log.LstdFlags))
 	as.StorageService = storagetest.New()
 	as.HTTPDService = httpdService

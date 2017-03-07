@@ -6556,6 +6556,11 @@ func TestServer_ListServiceTests(t *testing.T) {
 				},
 			},
 			{
+				Link:    client.Link{Relation: client.Self, Href: "/kapacitor/v1/service-tests/alertpost"},
+				Name:    "alertpost",
+				Options: client.ServiceTestOptions{},
+			},
+			{
 				Link: client.Link{Relation: client.Self, Href: "/kapacitor/v1/service-tests/hipchat"},
 				Name: "hipchat",
 				Options: client.ServiceTestOptions{

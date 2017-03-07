@@ -22,6 +22,7 @@ import (
 	iclient "github.com/influxdata/kapacitor/influxdb"
 	"github.com/influxdata/kapacitor/services/alert"
 	"github.com/influxdata/kapacitor/services/alerta"
+	"github.com/influxdata/kapacitor/services/alertpost"
 	"github.com/influxdata/kapacitor/services/config"
 	"github.com/influxdata/kapacitor/services/deadman"
 	"github.com/influxdata/kapacitor/services/hipchat"
@@ -139,8 +140,6 @@ func New(c *Config, buildInfo BuildInfo, logService logging.Interface) (*Server,
 	}
 	s.Logger.Println("I! Kapacitor hostname:", s.hostname)
 
-	fmt.Println(s.config.Post)
-
 	// Setup IDs
 	err = s.setupIDs()
 	if err != nil {
@@ -190,6 +189,7 @@ func New(c *Config, buildInfo BuildInfo, logService logging.Interface) (*Server,
 	s.appendOpsGenieService()
 	s.appendPagerDutyService()
 	s.appendPushoverService()
+	s.appendPostService()
 	s.appendSMTPService()
 	s.appendTelegramService()
 	s.appendSlackService()
@@ -448,6 +448,18 @@ func (s *Server) appendPushoverService() {
 
 	s.SetDynamicService("pushover", srv)
 	s.AppendService("pushover", srv)
+}
+
+func (s *Server) appendPostService() {
+	c := s.config.Post
+	l := s.LogService.NewLogger("[alertpost] ", log.LstdFlags)
+	srv := alertpost.NewService(c, l)
+
+	s.TaskMaster.PostService = srv
+	s.AlertService.PostService = srv
+
+	s.SetDynamicService("alertpost", srv)
+	s.AppendService("alertpost", srv)
 }
 
 func (s *Server) appendSensuService() {
